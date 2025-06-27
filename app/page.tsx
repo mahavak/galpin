@@ -34,7 +34,7 @@ export default function Home() {
           <h2 className="text-3xl font-bold text-center mb-12">
             Optimize Every Aspect of Your Performance
           </h2>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Training */}
             <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
@@ -44,8 +44,8 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold mb-2">Training Tracking</h3>
               <p className="text-gray-600">
-                Log your workouts with fasted state, intensity, and nutrition timing. 
-                Get personalized recommendations based on your training type.
+                Log workouts with fasted state, intensity, and nutrition timing. 
+                Get recommendations based on training type.
               </p>
             </div>
 
@@ -59,7 +59,21 @@ export default function Home() {
               <h3 className="text-xl font-semibold mb-2">Sleep Analytics</h3>
               <p className="text-gray-600">
                 Monitor sleep quality, duration, and environmental factors like CO2 levels. 
-                Understand how sleep impacts your performance.
+                Understand how sleep impacts performance.
+              </p>
+            </div>
+
+            {/* Recovery */}
+            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Recovery Tracking</h3>
+              <p className="text-gray-600">
+                Track post-workout carb timing, readiness scores, and recovery 
+                modalities like cold therapy and massage.
               </p>
             </div>
 
@@ -72,7 +86,7 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold mb-2">Supplement Management</h3>
               <p className="text-gray-600">
-                Track your supplements with proper dosing and timing. Get evidence-based 
+                Track supplements with proper dosing and timing. Get evidence-based 
                 recommendations for performance enhancement.
               </p>
             </div>

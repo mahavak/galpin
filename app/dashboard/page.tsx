@@ -10,6 +10,8 @@ interface DashboardStats {
   activeSupplements: number
   lastSleepDuration: number | null
   lastTrainingType: string | null
+  avgReadiness: number
+  lastCarbTiming: number | null
 }
 
 export default function DashboardPage() {
@@ -18,7 +20,9 @@ export default function DashboardPage() {
     avgSleepQuality: 0,
     activeSupplements: 0,
     lastSleepDuration: null,
-    lastTrainingType: null
+    lastTrainingType: null,
+    avgReadiness: 0,
+    lastCarbTiming: null
   })
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
@@ -59,6 +63,14 @@ export default function DashboardPage() {
         .eq('user_id', user.id)
         .is('end_date', null)
 
+      // Fetch recovery data
+      const { data: recoverySessions } = await supabase
+        .from('recovery_sessions')
+        .select('next_session_readiness, post_workout_carb_timing_minutes')
+        .eq('user_id', user.id)
+        .order('recovery_date', { ascending: false })
+        .limit(7)
+
       // Calculate stats
       const weeklyTraining = trainingSessions?.length || 0
       const avgSleepQuality = sleepRecords?.length 
@@ -67,13 +79,19 @@ export default function DashboardPage() {
       const activeSupplements = userSupplements?.length || 0
       const lastSleepDuration = sleepRecords?.[0]?.duration_hours || null
       const lastTrainingType = trainingSessions?.[trainingSessions.length - 1]?.type || null
+      const avgReadiness = recoverySessions?.length 
+        ? Math.round(recoverySessions.reduce((sum, session) => sum + (session.next_session_readiness || 0), 0) / recoverySessions.length * 10) / 10
+        : 0
+      const lastCarbTiming = recoverySessions?.[0]?.post_workout_carb_timing_minutes || null
 
       setStats({
         weeklyTraining,
         avgSleepQuality,
         activeSupplements,
         lastSleepDuration,
-        lastTrainingType
+        lastTrainingType,
+        avgReadiness,
+        lastCarbTiming
       })
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
@@ -116,6 +134,25 @@ export default function DashboardPage() {
         icon: '⚠️',
         title: 'Recovery Check',
         message: 'High training frequency detected. Ensure adequate recovery and sleep quality.'
+      })
+    }
+
+    // Recovery recommendations
+    if (stats.lastCarbTiming && stats.lastCarbTiming > 120) {
+      recommendations.push({
+        type: 'warning',
+        icon: '🍌',
+        title: 'Post-Workout Nutrition',
+        message: 'Dr. Galpin emphasizes rapid carb replenishment. Your last session had carbs at ' + stats.lastCarbTiming + ' minutes post-workout. Aim for 30-60 minutes.'
+      })
+    }
+
+    if (stats.avgReadiness > 0 && stats.avgReadiness < 6) {
+      recommendations.push({
+        type: 'warning',
+        icon: '🔋',
+        title: 'Low Readiness',
+        message: 'Your average readiness score is low. Consider recovery modalities like tart cherry extract or cold therapy.'
       })
     }
 
@@ -164,7 +201,7 @@ export default function DashboardPage() {
       </div>
       
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0 bg-blue-100 rounded-full p-3">
@@ -220,6 +257,25 @@ export default function DashboardPage() {
 
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center">
+            <div className="flex-shrink-0 bg-orange-100 rounded-full p-3">
+              <svg className="h-6 w-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </div>
+            <div className="ml-4">
+              <h3 className="text-sm font-medium text-gray-500">Avg Readiness</h3>
+              <p className="text-2xl font-semibold text-gray-900">
+                {stats.avgReadiness > 0 ? `${stats.avgReadiness} / 10` : '-- / 10'}
+              </p>
+              {stats.lastCarbTiming && (
+                <p className="text-xs text-gray-500">Last carbs: {stats.lastCarbTiming}min</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center">
             <div className="flex-shrink-0 bg-yellow-100 rounded-full p-3">
               <svg className="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -229,11 +285,11 @@ export default function DashboardPage() {
               <h3 className="text-sm font-medium text-gray-500">Performance Score</h3>
               <p className="text-2xl font-semibold text-gray-900">
                 {stats.avgSleepQuality > 0 && stats.weeklyTraining > 0 
-                  ? Math.round((stats.avgSleepQuality + (stats.weeklyTraining / 7 * 10)) / 2)
+                  ? Math.round((stats.avgSleepQuality + (stats.weeklyTraining / 7 * 10) + stats.avgReadiness) / 3)
                   : '--'
                 }
               </p>
-              <p className="text-xs text-gray-500">Sleep + Training</p>
+              <p className="text-xs text-gray-500">Sleep + Training + Recovery</p>
             </div>
           </div>
         </div>
@@ -242,7 +298,7 @@ export default function DashboardPage() {
       {/* Quick Actions */}
       <div className="bg-white rounded-lg shadow p-6 mb-8">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link 
             href="/dashboard/training"
             className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
@@ -250,7 +306,7 @@ export default function DashboardPage() {
             <svg className="h-5 w-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
-            Log Training Session
+            Log Training
           </Link>
           <Link 
             href="/dashboard/sleep"
@@ -262,13 +318,22 @@ export default function DashboardPage() {
             Record Sleep
           </Link>
           <Link 
+            href="/dashboard/recovery"
+            className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+          >
+            <svg className="h-5 w-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Log Recovery
+          </Link>
+          <Link 
             href="/dashboard/supplements"
             className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
           >
             <svg className="h-5 w-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
-            Track Supplement
+            Add Supplement
           </Link>
         </div>
       </div>

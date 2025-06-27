@@ -18,26 +18,38 @@ A science-based performance optimization web app for athletes, built with Next.j
 - Sleep quality scoring (1-10)
 - Evidence-based sleep optimization tips
 
+### 🔄 Recovery Tracking
+- Post-workout carbohydrate replenishment timing
+- Readiness scores and subjective wellness metrics
+- Recovery modality tracking (cold therapy, massage, stretching)
+- Muscle soreness and energy level monitoring
+- Sleep quality correlation with recovery
+- Evidence-based carb timing recommendations
+
 ### 💊 Supplement Management
 - Pre-loaded database of research-backed supplements
 - Track dosage, timing, and frequency
-- Evidence-based recommendations:
-  - Protein powder for meeting intake goals
-  - Magnesium (150-200mg) - common deficiency
-  - Vitamin D - dose based on blood levels
-  - Caffeine (150-400mg) - pre-workout performance
+- Recovery-specific supplements:
+  - Tart cherry extract (480mg) - muscle soreness and sleep
+  - Glutamine (5g) - immune support during heavy training
+  - Curcumin - anti-inflammatory for recovery
+  - Omega-3 fish oil - joint health and inflammation
+  - Magnesium glycinate - sleep and muscle relaxation
+  - Melatonin - sleep onset and quality
+- Performance supplements:
+  - Caffeine (150-400mg) - pre-workout enhancement
   - Beetroot extract - nitric oxide for endurance
   - Rhodiola - stress response without sleep disruption
-  - Tart cherry - muscle soreness and sleep aid
-  - Glutamine (5g) - immune support
   - Creatine - most researched supplement
 
 ### 📊 Performance Dashboard
 - Weekly training overview
 - Average sleep quality metrics
-- Active supplement tracking
-- Quick action buttons for logging
-- Daily recommendations based on Dr. Galpin's insights
+- Recovery readiness tracking
+- Active supplement monitoring
+- Performance score (sleep + training + recovery)
+- Quick action buttons for all tracking modules
+- Smart recommendations based on Dr. Galpin's insights
 
 ## Tech Stack
 
