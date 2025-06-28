@@ -11,7 +11,7 @@ export default function Home() {
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Science-based performance optimization for athletes. Track your training, 
-            sleep, and supplements based on Dr. Andy Galpin's research.
+            sleep, and supplements based on Dr. Andy Galpin&apos;s research.
           </p>
           <div className="flex gap-4 justify-center">
             <Link
