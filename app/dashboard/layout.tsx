@@ -31,11 +31,11 @@ export default function DashboardLayout({
   ]
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
-        <div className="flex h-16 items-center justify-between px-6 border-b">
-          <h1 className="text-xl font-bold text-gray-900">Galpin Tracker</h1>
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-gray-900/95 backdrop-blur-sm shadow-lg transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 border-r border-white/10`}>
+        <div className="flex h-16 items-center justify-between px-6 border-b border-white/10">
+          <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Galpin Tracker</h1>
           <button
             onClick={() => setIsSidebarOpen(false)}
             className="lg:hidden"
@@ -52,15 +52,15 @@ export default function DashboardLayout({
               <Link
                 key={item.name}
                 href={item.href}
-                className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
+                className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-all ${
                   isActive
-                    ? 'bg-blue-100 text-blue-700'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                    : 'text-gray-300 hover:bg-white/10 hover:text-white'
                 }`}
               >
                 <item.icon
                   className={`mr-3 h-5 w-5 ${
-                    isActive ? 'text-blue-700' : 'text-gray-400 group-hover:text-gray-500'
+                    isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'
                   }`}
                 />
                 {item.name}
@@ -68,12 +68,12 @@ export default function DashboardLayout({
             )
           })}
         </nav>
-        <div className="border-t p-4">
+        <div className="border-t border-white/10 p-4">
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center px-2 py-2 text-sm font-medium text-gray-600 rounded-md hover:bg-gray-50 hover:text-gray-900"
+            className="w-full flex items-center px-2 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-red-600/20 hover:text-red-400 transition-all"
           >
-            <svg className="mr-3 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
             Sign Out
@@ -84,10 +84,10 @@ export default function DashboardLayout({
       {/* Main content */}
       <div className="lg:pl-64">
         {/* Mobile menu button */}
-        <div className="sticky top-0 z-40 flex h-16 bg-white shadow-sm lg:hidden">
+        <div className="sticky top-0 z-40 flex h-16 bg-gray-900/95 backdrop-blur-sm shadow-sm lg:hidden border-b border-white/10">
           <button
             onClick={() => setIsSidebarOpen(true)}
-            className="px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+            className="px-4 text-gray-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -95,7 +95,7 @@ export default function DashboardLayout({
           </button>
         </div>
 
-        <main className="py-6 px-4 sm:px-6 lg:px-8">
+        <main className="py-6 px-4 sm:px-6 lg:px-8 min-h-screen">
           {children}
         </main>
       </div>

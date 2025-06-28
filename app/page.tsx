@@ -129,19 +129,19 @@ export default function Home() {
             <div className="bg-gray-100 rounded-xl p-8">
               <h3 className="font-semibold text-lg mb-4">Key Insights Include:</h3>
               <div className="space-y-4 text-sm">
-                <div className="bg-white p-4 rounded-lg">
+                <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg border border-white/20">
                   <p className="font-medium text-gray-900">Fasted Training</p>
                   <p className="text-gray-600 mt-1">
                     Beneficial for endurance under 60 minutes, not recommended for strength training
                   </p>
                 </div>
-                <div className="bg-white p-4 rounded-lg">
+                <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg border border-white/20">
                   <p className="font-medium text-gray-900">Sleep & CO2</p>
                   <p className="text-gray-600 mt-1">
                     CO2 levels above 900ppm negatively impact sleep quality and recovery
                   </p>
                 </div>
-                <div className="bg-white p-4 rounded-lg">
+                <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg border border-white/20">
                   <p className="font-medium text-gray-900">Strategic Supplementation</p>
                   <p className="text-gray-600 mt-1">
                     Proper timing and dosing of supplements like caffeine, beetroot, and rhodiola
