@@ -192,12 +192,12 @@ export default function DashboardPage() {
     <div>
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
-          <p className="text-gray-600">Track your performance optimization journey</p>
+          <h1 className="text-2xl font-bold text-white">Dashboard Overview</h1>
+          <p className="text-gray-300">Track your performance optimization journey</p>
         </div>
         <button 
           onClick={fetchDashboardData}
-          className="text-sm text-blue-600 hover:text-blue-800"
+          className="text-sm text-blue-400 hover:text-blue-300"
         >
           Refresh Data
         </button>
@@ -213,12 +213,12 @@ export default function DashboardPage() {
               </svg>
             </div>
             <div className="ml-4">
-              <h3 className="text-sm font-medium text-gray-500">This Week's Training</h3>
-              <p className="text-2xl font-semibold text-gray-900">
+              <h3 className="text-sm font-medium text-gray-300">This Week's Training</h3>
+              <p className="text-2xl font-semibold text-white">
                 {stats.weeklyTraining} sessions
               </p>
               {stats.lastTrainingType && (
-                <p className="text-xs text-gray-500 capitalize">Last: {stats.lastTrainingType}</p>
+                <p className="text-xs text-gray-400 capitalize">Last: {stats.lastTrainingType}</p>
               )}
             </div>
           </div>
@@ -232,12 +232,12 @@ export default function DashboardPage() {
               </svg>
             </div>
             <div className="ml-4">
-              <h3 className="text-sm font-medium text-gray-500">Avg Sleep Quality</h3>
-              <p className="text-2xl font-semibold text-gray-900">
+              <h3 className="text-sm font-medium text-gray-300">Avg Sleep Quality</h3>
+              <p className="text-2xl font-semibold text-white">
                 {stats.avgSleepQuality > 0 ? `${stats.avgSleepQuality} / 10` : '-- / 10'}
               </p>
               {stats.lastSleepDuration && (
-                <p className="text-xs text-gray-500">Last: {stats.lastSleepDuration}h</p>
+                <p className="text-xs text-gray-400">Last: {stats.lastSleepDuration}h</p>
               )}
             </div>
           </div>
@@ -251,9 +251,9 @@ export default function DashboardPage() {
               </svg>
             </div>
             <div className="ml-4">
-              <h3 className="text-sm font-medium text-gray-500">Active Supplements</h3>
-              <p className="text-2xl font-semibold text-gray-900">{stats.activeSupplements}</p>
-              <p className="text-xs text-gray-500">Currently taking</p>
+              <h3 className="text-sm font-medium text-gray-300">Active Supplements</h3>
+              <p className="text-2xl font-semibold text-white">{stats.activeSupplements}</p>
+              <p className="text-xs text-gray-400">Currently taking</p>
             </div>
           </div>
         </div>
@@ -266,12 +266,12 @@ export default function DashboardPage() {
               </svg>
             </div>
             <div className="ml-4">
-              <h3 className="text-sm font-medium text-gray-500">Avg Readiness</h3>
-              <p className="text-2xl font-semibold text-gray-900">
+              <h3 className="text-sm font-medium text-gray-300">Avg Readiness</h3>
+              <p className="text-2xl font-semibold text-white">
                 {stats.avgReadiness > 0 ? `${stats.avgReadiness} / 10` : '-- / 10'}
               </p>
               {stats.lastCarbTiming && (
-                <p className="text-xs text-gray-500">Last carbs: {stats.lastCarbTiming}min</p>
+                <p className="text-xs text-gray-400">Last carbs: {stats.lastCarbTiming}min</p>
               )}
             </div>
           </div>
@@ -285,22 +285,22 @@ export default function DashboardPage() {
               </svg>
             </div>
             <div className="ml-4">
-              <h3 className="text-sm font-medium text-gray-500">Performance Score</h3>
-              <p className="text-2xl font-semibold text-gray-900">
+              <h3 className="text-sm font-medium text-gray-300">Performance Score</h3>
+              <p className="text-2xl font-semibold text-white">
                 {stats.avgSleepQuality > 0 && stats.weeklyTraining > 0 
                   ? Math.round((stats.avgSleepQuality + (stats.weeklyTraining / 7 * 10) + stats.avgReadiness) / 3)
                   : '--'
                 }
               </p>
-              <p className="text-xs text-gray-500">Sleep + Training + Recovery</p>
+              <p className="text-xs text-gray-400">Sleep + Training + Recovery</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white rounded-lg shadow p-6 mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+      <div className="bg-white/10 backdrop-blur-sm rounded-lg shadow-lg p-6 mb-8 border border-white/20">
+        <h2 className="text-lg font-semibold text-white mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link 
             href="/dashboard/training"
