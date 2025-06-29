@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import { useTheme } from '@/lib/theme-context'
+import { useLanguage } from '@/lib/language-context'
 
 export default function DashboardLayout({
   children,
@@ -15,6 +17,9 @@ export default function DashboardLayout({
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
+  const { theme, toggleTheme } = useTheme()
+  const { t, language, setLanguage, supportedLanguages } = useLanguage()
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -22,28 +27,79 @@ export default function DashboardLayout({
   }
 
   const navigation = [
-    { name: 'Overview', href: '/dashboard', icon: HomeIcon },
-    { name: 'Training', href: '/dashboard/training', icon: ActivityIcon },
-    { name: 'Sleep', href: '/dashboard/sleep', icon: MoonIcon },
-    { name: 'Recovery', href: '/dashboard/recovery', icon: RecoveryIcon },
-    { name: 'Supplements', href: '/dashboard/supplements', icon: BeakerIcon },
-    { name: 'Profile', href: '/dashboard/profile', icon: UserIcon },
+    { name: t('nav.overview'), href: '/dashboard', icon: HomeIcon },
+    { name: t('nav.goals'), href: '/dashboard/goals', icon: TargetIcon },
+    { name: t('nav.training'), href: '/dashboard/training', icon: ActivityIcon },
+    { name: t('nav.sleep'), href: '/dashboard/sleep', icon: MoonIcon },
+    { name: t('nav.recovery'), href: '/dashboard/recovery', icon: RecoveryIcon },
+    { name: t('nav.injuries'), href: '/dashboard/injuries', icon: MedicalIcon },
+    { name: t('nav.supplements'), href: '/dashboard/supplements', icon: BeakerIcon },
+    { name: t('nav.export'), href: '/dashboard/export', icon: DownloadIcon },
+    { name: t('nav.profile'), href: '/dashboard/profile', icon: UserIcon },
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gradient-to-br dark:from-slate-900 dark:via-purple-900 dark:to-slate-900">
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-gray-900/95 backdrop-blur-sm shadow-lg transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 border-r border-white/10`}>
-        <div className="flex h-16 items-center justify-between px-6 border-b border-white/10">
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-900/95 backdrop-blur-sm shadow-lg transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 border-r border-gray-200 dark:border-white/10`}>
+        <div className="flex h-16 items-center justify-between px-6 border-b border-gray-200 dark:border-white/10">
           <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Galpin Tracker</h1>
-          <button
-            onClick={() => setIsSidebarOpen(false)}
-            className="lg:hidden"
-          >
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+          <div className="flex items-center space-x-2">
+            {/* Language Selector */}
+            <div className="relative">
+              <button
+                onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+                className="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                title={t('profile.language')}
+              >
+                <span className="text-lg">
+                  {supportedLanguages.find(lang => lang.code === language)?.flag}
+                </span>
+              </button>
+              {showLanguageDropdown && (
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
+                  {supportedLanguages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        setLanguage(lang.code)
+                        setShowLanguageDropdown(false)
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2 ${
+                        language === lang.code ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'
+                      }`}
+                    >
+                      <span>{lang.flag}</span>
+                      <span>{lang.name}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+              title={t('theme.switchTo', { mode: theme === 'dark' ? t('theme.light') : t('theme.dark') })}
+            >
+              {theme === 'dark' ? (
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
+            </button>
+            <button
+              onClick={() => setIsSidebarOpen(false)}
+              className="lg:hidden p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
         <nav className="flex-1 space-y-1 px-2 py-4">
           {navigation.map((item) => {
@@ -55,12 +111,12 @@ export default function DashboardLayout({
                 className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-all ${
                   isActive
                     ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                    : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
                 <item.icon
                   className={`mr-3 h-5 w-5 ${
-                    isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'
+                    isActive ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-white'
                   }`}
                 />
                 {item.name}
@@ -68,15 +124,15 @@ export default function DashboardLayout({
             )
           })}
         </nav>
-        <div className="border-t border-white/10 p-4">
+        <div className="border-t border-gray-200 dark:border-white/10 p-4">
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center px-2 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-red-600/20 hover:text-red-400 transition-all"
+            className="w-full flex items-center px-2 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-red-100 dark:hover:bg-red-600/20 hover:text-red-600 dark:hover:text-red-400 transition-all"
           >
             <svg className="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
-            Sign Out
+            {t('nav.signOut')}
           </button>
         </div>
       </div>
@@ -84,10 +140,10 @@ export default function DashboardLayout({
       {/* Main content */}
       <div className="lg:pl-64">
         {/* Mobile menu button */}
-        <div className="sticky top-0 z-40 flex h-16 bg-gray-900/95 backdrop-blur-sm shadow-sm lg:hidden border-b border-white/10">
+        <div className="sticky top-0 z-40 flex h-16 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-sm lg:hidden border-b border-gray-200 dark:border-white/10">
           <button
             onClick={() => setIsSidebarOpen(true)}
-            className="px-4 text-gray-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+            className="px-4 text-gray-600 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -148,6 +204,31 @@ function RecoveryIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+    </svg>
+  )
+}
+
+function TargetIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+    </svg>
+  )
+}
+
+function DownloadIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+    </svg>
+  )
+}
+
+function MedicalIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
     </svg>
   )
 }

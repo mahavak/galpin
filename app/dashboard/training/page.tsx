@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { Database } from '@/types/database'
+import { useLanguage } from '@/lib/language-context'
 
 type TrainingSession = Database['public']['Tables']['training_sessions']['Row']
 
@@ -11,6 +12,7 @@ export default function TrainingPage() {
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const supabase = createClient()
+  const { t } = useLanguage()
 
   // Form state
   const [formData, setFormData] = useState({
@@ -116,29 +118,45 @@ export default function TrainingPage() {
   const recommendation = getTrainingRecommendation()
 
   if (loading) {
-    return <div className="flex justify-center items-center h-64">Loading...</div>
+    return <div className="flex justify-center items-center h-64">{t('common.loading')}</div>
   }
 
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Training Sessions</h1>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-        >
-          {showForm ? 'Cancel' : 'Log New Session'}
-        </button>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('training.title')}</h1>
+        <div className="flex space-x-3">
+          <a 
+            href="/dashboard/training/enhanced"
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center"
+          >
+            <span className="mr-2">📝</span>
+            {t('training.enhanced')}
+          </a>
+          <a 
+            href="/dashboard/training/templates"
+            className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition flex items-center"
+          >
+            <span className="mr-2">📋</span>
+            {t('training.templates')}
+          </a>
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          >
+            {showForm ? t('common.cancel') : t('training.logSession')}
+          </button>
+        </div>
       </div>
 
       {showForm && (
         <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-lg font-semibold mb-4">Log Training Session</h2>
+          <h2 className="text-lg font-semibold mb-4">{t('training.logSession')}</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Date
+                  {t('common.date')}
                 </label>
                 <input
                   type="date"
